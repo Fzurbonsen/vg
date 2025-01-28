@@ -133,3 +133,9 @@
 [submodule "deps/kff-cpp-api"]
 	path = deps/kff-cpp-api
 	url = https://github.com/Kmer-File-Format/kff-cpp-api.git
+[submodule "deps/s_gwfa"]
+	path = deps/s_gwfa
+	url = https://github.com/Fzurbonsen/s_gwfa.git
+[submodule "deps/edlib"]
+	path = deps/edlib
+	url = https://github.com/Martinsos/edlib.git

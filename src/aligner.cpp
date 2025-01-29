@@ -11,6 +11,9 @@
 #include "dozeu_pinning_overlay.hpp"
 #include "algorithms/distance_to_tail.hpp"
 
+#include "s_gwfa.h"
+#include "edlib.h"
+
 //#define debug_print_score_matrices
 
 namespace vg {

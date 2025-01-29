@@ -4,9 +4,6 @@
 [submodule "fastahack"]
 	path = deps/fastahack
 	url = https://github.com/vgteam/fastahack.git
-[submodule "gssw"]
-	path = deps/gssw
-	url = https://github.com/vgteam/gssw.git
 [submodule "bash-tap"]
 	path = deps/bash-tap
 	url = https://github.com/illusori/bash-tap.git
@@ -139,3 +136,6 @@
 [submodule "deps/edlib"]
 	path = deps/edlib
 	url = https://github.com/Martinsos/edlib.git
+[submodule "deps/gssw"]
+	path = deps/gssw
+	url = https://github.com/Fzurbonsen/gssw.git

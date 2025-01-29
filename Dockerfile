@@ -6,6 +6,10 @@
 FROM mirror.gcr.io/library/ubuntu:20.04 AS base
 MAINTAINER vgteam
 
+ENV http_proxy=http://proxy.ethz.ch:3128
+ENV https_proxy=http://proxy.ethz.ch:3128
+ENV no_proxy=localhost,127.0.0.1
+
 RUN echo base > /stage.txt
 
 WORKDIR /vg

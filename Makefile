@@ -72,8 +72,9 @@ INCLUDE_FLAGS :=-I$(CWD)/$(INC_DIR) -I. -I$(CWD)/$(SRC_DIR) -I$(CWD)/$(UNITTEST_
 
 # These need to come before library search paths from LDFLAGS or we won't
 # prefer linking vg-installed dependencies over system ones.
+# -ledlib -ls_gwfa
 LD_LIB_DIR_FLAGS := -L$(CWD)/$(LIB_DIR)
-LD_LIB_FLAGS := -lvcflib -ltabixpp -lgssw -lssw -lsublinearLS -lpthread -lncurses -lgcsa2 -lgbwtgraph -lgbwt -lkff -ldivsufsort -ldivsufsort64 -lvcfh -lraptor2 -lpinchesandcacti -l3edgeconnected -lsonlib -lfml -lstructures -lbdsg -lxg -lsdsl -lzstd -lhandlegraph
+LD_LIB_FLAGS := -lvcflib -ltabixpp -ls_gwfa -ledlib -lgssw -lssw -lsublinearLS -lpthread -lncurses -lgcsa2 -lgbwtgraph -lgbwt -lkff -ldivsufsort -ldivsufsort64 -lvcfh -lraptor2 -lpinchesandcacti -l3edgeconnected -lsonlib -lfml -lstructures -lbdsg -lxg -lsdsl -lzstd -lhandlegraph
 # We omit Boost Program Options for now; we find it in a platform-dependent way.
 # By default it has no suffix
 BOOST_SUFFIX=""
@@ -349,6 +350,8 @@ VCFLIB_DIR:=deps/vcflib
 TABIXPP_DIR:=deps/tabixpp
 HTSLIB_DIR:=deps/htslib
 GSSW_DIR:=deps/gssw
+EDLIB_DIR:=deps/edlib
+S_GWFA_DIR:=deps/s_gwfa
 SPARSEHASH_DIR:=deps/sparsehash
 SPARSEPP_DIR:=deps/sparsepp
 SHA1_DIR:=deps/sha1
@@ -394,6 +397,8 @@ LIB_DEPS += $(LIB_DIR)/libhts.a
 LIB_DEPS += $(LIB_DIR)/libtabixpp.a
 LIB_DEPS += $(LIB_DIR)/libvcflib.a
 LIB_DEPS += $(LIB_DIR)/libgssw.a
+LIB_DEPS += $(LIB_DIR)/libedlib.a
+LIB_DEPS += $(LIB_DIR)/libs_gwfa.a
 LIB_DEPS += $(LIB_DIR)/libvcfh.a
 LIB_DEPS += $(LIB_DIR)/libsonlib.a
 LIB_DEPS += $(LIB_DIR)/libpinchesandcacti.a
@@ -744,6 +749,12 @@ $(FASTAHACK_DIR)/fastahack: $(FASTAHACK_DIR)/*.c $(FASTAHACK_DIR)/*.h $(FASTAHAC
 $(LIB_DIR)/libgssw.a: $(GSSW_DIR)/src/gssw.c $(GSSW_DIR)/src/gssw.h
 	+cd $(GSSW_DIR) && $(MAKE) clean && CFLAGS="-fPIC $(CFLAGS)" CXXFLAGS="-fPIC $(CXXFLAGS)" $(MAKE) $(FILTER) && cp lib/libgssw.a $(CWD)/$(LIB_DIR)/ && cp src/gssw.h $(CWD)/$(INC_DIR)/
 
+$(LIB_DIR)/libedlib.a: $(EDLIB_DIR)/edlib/src/edlib.cpp $(EDLIB_DIR)/edlib/include/edlib.h
+	+cd $(EDLIB_DIR) && cd build && cmake -D CMAKE_BUILD_TYPE=Release .. && $(MAKE) $(FILTER) && cp lib/libedlib.a $(CWD)/$(LIB_DIR)/ && cp ../edlib/include/edlib.h $(CWD)/$(INC_DIR)/
+
+$(LIB_DIR)/libs_gwfa.a: $(S_GWFA_DIR)/src/s_gwfa.c $(S_GWFA_DIR)/src/s_gwfa.h
+	+cd $(S_GWFA_DIR) && $(MAKE) clean && $(MAKE) $(FILTER) && cp lib/libs_gwfa.a $(CWD)/$(LIB_DIR)/ && cp src/s_gwfa.h $(CWD)/$(INC_DIR)/
+
 $(INC_DIR)/lru_cache.h: $(DEP_DIR)/lru_cache/*.h $(DEP_DIR)/lru_cache/*.cc
 	+cd $(DEP_DIR)/lru_cache && cp *.h* $(CWD)/$(INC_DIR)/
 
@@ -1074,6 +1085,8 @@ clean: clean-vcflib
 	cd $(DEP_DIR) && cd gbwt && $(MAKE) clean
 	cd $(DEP_DIR) && cd gbwtgraph && $(MAKE) clean
 	cd $(DEP_DIR) && cd kff-cpp-api && rm -Rf build
+	cd $(DEP_DIR) && cd s_gwfa && $(MAKE) clean
+	cd $(DEP_DIR) && cd edlib && $(MAKE) clean && rm -rf build && mkdir build
 	cd $(DEP_DIR) && cd gssw && $(MAKE) clean
 	cd $(DEP_DIR) && cd ssw && cd src && $(MAKE) clean
 	cd $(DEP_DIR) && cd progress_bar && $(MAKE) clean

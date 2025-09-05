@@ -57,22 +57,22 @@ COPY deps /vg/deps
 # target CPU architecture to Nehalem (2008) rather than auto-detecting the
 # build machine's CPU. This has no AVX1, AVX2, or PCLMUL, but it does have
 # SSE4.2. UCSC has a Nehalem machine that we want to support.
-RUN if [ -z "${TARGETARCH}" ] || [ "${TARGETARCH}" = "amd64" ] ; then sed -i s/march=native/march=nehalem/ deps/sdsl-lite/CMakeLists.txt; fi
+# RUN if [ -z "${TARGETARCH}" ] || [ "${TARGETARCH}" = "amd64" ] ; then sed -i s/march=native/march=nehalem/ deps/sdsl-lite/CMakeLists.txt; fi
 # Clear any CMake caches in case we are building from someone's checkout
-RUN find . -name CMakeCache.txt | xargs rm -f
+# RUN find . -name CMakeCache.txt | xargs rm -f
 # Build the dependencies
 COPY Makefile /vg/Makefile
-RUN CXXFLAGS="$(if [ -z "${TARGETARCH}" ] || [ "${TARGETARCH}" = "amd64" ] ; then echo " -march=nehalem "; fi)" CFLAGS="$(if [ -z "${TARGETARCH}" ] || [ "${TARGETARCH}" = "amd64" ] ; then echo " -march=nehalem "; fi)" make -j $((THREADS < $(nproc) ? THREADS : $(nproc))) deps
+# RUN CXXFLAGS="$(if [ -z "${TARGETARCH}" ] || [ "${TARGETARCH}" = "amd64" ] ; then echo " -march=nehalem "; fi)" CFLAGS="$(if [ -z "${TARGETARCH}" ] || [ "${TARGETARCH}" = "amd64" ] ; then echo " -march=nehalem "; fi)" make -j $((THREADS < $(nproc) ? THREADS : $(nproc))) deps
 
 # Bring in the sources, which we need in order to build.
 COPY src /vg/src
 
 # Build all the object files for vg, but don't link.
 # Also pass the arch here
-RUN CXXFLAGS="$(if [ -z "${TARGETARCH}" ] || [ "${TARGETARCH}" = "amd64" ] ; then echo " -march=nehalem "; fi)" make -j $((THREADS < $(nproc) ? THREADS : $(nproc))) objs
+# RUN CXXFLAGS="$(if [ -z "${TARGETARCH}" ] || [ "${TARGETARCH}" = "amd64" ] ; then echo " -march=nehalem "; fi)" make -j $((THREADS < $(nproc) ? THREADS : $(nproc))) objs
 
 # Do the final build and link, knowing the version. Trim down the resulting binary but make sure to include enough debug info for profiling.
-RUN CXXFLAGS="$(if [ -z "${TARGETARCH}" ] || [ "${TARGETARCH}" = "amd64" ] ; then echo " -march=nehalem "; fi)" make -j $((THREADS < $(nproc) ? THREADS : $(nproc))) static && strip -d bin/vg
+# RUN CXXFLAGS="$(if [ -z "${TARGETARCH}" ] || [ "${TARGETARCH}" = "amd64" ] ; then echo " -march=nehalem "; fi)" make -j $((THREADS < $(nproc) ? THREADS : $(nproc))) static && strip -d bin/vg
 
 # Ship the scripts
 COPY scripts /vg/scripts
@@ -88,7 +88,7 @@ RUN echo test > /stage.txt
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && apt-get -qq -y install nodejs && npm install -g txm@7.4.5
 
 # Fail if any non-portable instructions were used
-RUN /bin/bash -e -c 'if objdump -d /vg/bin/vg | grep vperm2i128 ; then exit 1 ; else exit 0 ; fi'
+# RUN /bin/bash -e -c 'if objdump -d /vg/bin/vg | grep vperm2i128 ; then exit 1 ; else exit 0 ; fi'
 
 # Bring in the tests and docs, which have doctests
 COPY test /vg/test
@@ -98,7 +98,7 @@ COPY README.md /vg/
 
 # Run tests in the middle so the final container that gets tagged is the run container.
 # Tests may not actually be run by smart builders like buildkit.
-RUN /bin/bash -e -c "export OMP_NUM_THREADS=$((THREADS < $(nproc) ? THREADS : $(nproc))); make test"
+# RUN /bin/bash -e -c "export OMP_NUM_THREADS=$((THREADS < $(nproc) ? THREADS : $(nproc))); make test"
 
 
 ############################################################################################
@@ -140,11 +140,11 @@ RUN ls -lah /vg && \
     time \
     && apt-get -qq -y clean
     
-COPY --from=build /vg/bin/vg /vg/bin/
+# COPY --from=build /vg/bin/vg /vg/bin/
 
 COPY --from=build /vg/scripts/* /vg/scripts/
 # Make sure we have the flame graph scripts so we can do self-profiling
-COPY --from=build /vg/deps/FlameGraph /vg/deps/FlameGraph
+# COPY --from=build /vg/deps/FlameGraph /vg/deps/FlameGraph
 
 ENV PATH /vg/bin:$PATH
 

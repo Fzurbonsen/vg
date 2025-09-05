@@ -1,9 +1,6 @@
 [submodule "vcflib"]
 	path = deps/vcflib
 	url = https://github.com/vcflib/vcflib.git
-[submodule "gssw"]
-	path = deps/gssw
-	url = https://github.com/vgteam/gssw.git
 [submodule "bash-tap"]
 	path = deps/bash-tap
 	url = https://github.com/illusori/bash-tap.git
@@ -133,3 +130,7 @@
 [submodule "deps/mimalloc"]
 	path = deps/mimalloc
 	url = https://github.com/microsoft/mimalloc.git
+[submodule "deps/gssw"]
+	path = deps/gssw
+	url = https://github.com/Fzurbonsen/gssw.git
+	branch = HierarchyAligner

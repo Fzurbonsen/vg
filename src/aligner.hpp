@@ -11,6 +11,7 @@
 #include <vg/vg.pb.h>
 
 #include "gssw.h"
+#include "vg_gwfa_pipeline_wrapper.h"
 #include "Variant.h"
 #include "Fasta.h"
 #include "handle.hpp"

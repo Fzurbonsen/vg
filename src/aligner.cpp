@@ -1134,6 +1134,11 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                            gap_open, gap_extension, full_length_bonus,
                            pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
 
+    test();
+    exit(1);
+
+    
+
     // traceback either from pinned position or optimal local alignment
     if (traceback_aln) {
         if (pinned) {

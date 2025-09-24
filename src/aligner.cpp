@@ -1141,7 +1141,7 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                                 align_sequence->c_str(),
                                 nullptr,
                                 align_sequence->size(),
-                                pinning_ids, // should be pinning nodes
+                                nullptr, // should be pinning nodes
                                 pinning_ids.size(),
                                 nt_table,
                                 score_matrix,

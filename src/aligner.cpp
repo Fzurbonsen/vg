@@ -1134,27 +1134,26 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                            gap_open, gap_extension, full_length_bonus,
                            pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
 
-    gwfa_graph_align_trace_back(graph,
-                                1,
-                                max_alt_alns,
-                                true,
-                                align_sequence->c_str(),
-                                nullptr,
-                                align_sequence->size(),
-                                nullptr, // should be pinning nodes
-                                pinning_ids.size(),
-                                nt_table,
-                                score_matrix,
-                                gap_open,
-                                gap_extension,
-                                full_length_bonus,
-                                0);
-
-    cerr << "traceback tests" << endl;
+    // gwfa_graph_align_trace_back(graph,
+    //                             1,
+    //                             max_alt_alns,
+    //                             true,
+    //                             align_sequence->c_str(),
+    //                             nullptr,
+    //                             align_sequence->size(),
+    //                             nullptr, // should be pinning nodes
+    //                             pinning_ids.size(),
+    //                             nt_table,
+    //                             score_matrix,
+    //                             gap_open,
+    //                             gap_extension,
+    //                             full_length_bonus,
+    //                             0);
 
     // traceback either from pinned position or optimal local alignment
     if (traceback_aln) {
-        if (pinned) {
+        if (0) {
+        // if (pinned) {
             // we can only run gssw's DP on non-empty graphs, but we may have masked the entire graph
             // if it consists of only empty nodes, so don't both with the DP in that case
             gssw_graph_mapping** gms = nullptr;
@@ -1285,15 +1284,31 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
         }
         else {
             // trace back local alignment
-            gssw_graph_mapping* gm = gssw_graph_trace_back (graph,
-                                                            align_sequence->c_str(),
-                                                            align_sequence->size(),
-                                                            nt_table,
-                                                            score_matrix,
-                                                            gap_open,
-                                                            gap_extension,
-                                                            full_length_bonus,
-                                                            full_length_bonus);
+            // gssw_graph_mapping* gm = gssw_graph_trace_back (graph,
+            //                                                 align_sequence->c_str(),
+            //                                                 align_sequence->size(),
+            //                                                 nt_table,
+            //                                                 score_matrix,
+            //                                                 gap_open,
+            //                                                 gap_extension,
+            //                                                 full_length_bonus,
+            //                                                 full_length_bonus);
+
+            gssw_graph_mapping* gm = gwfa_graph_align_trace_back(graph,
+                                                                    1,
+                                                                    max_alt_alns,
+                                                                    true,
+                                                                    align_sequence->c_str(),
+                                                                    nullptr,
+                                                                    align_sequence->size(),
+                                                                    nullptr, // should be pinning nodes
+                                                                    pinning_ids.size(),
+                                                                    nt_table,
+                                                                    score_matrix,
+                                                                    gap_open,
+                                                                    gap_extension,
+                                                                    full_length_bonus,
+                                                                    0);
         
             gssw_mapping_to_alignment(graph, gm, alignment, pinned, pin_left);
             gssw_graph_mapping_destroy(gm);

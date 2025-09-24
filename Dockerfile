@@ -14,6 +14,9 @@ WORKDIR /vg
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 
+ENV http_proxy=http://proxy.ethz.ch:3128
+ENV https_proxy=https://proxy.ethz.ch:3128
+
 FROM base AS packages
 ARG THREADS=8
 ARG TARGETARCH

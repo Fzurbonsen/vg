@@ -1150,6 +1150,8 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                                 full_length_bonus,
                                 0);
 
+    cerr << "traceback tests" << endl;
+
     // traceback either from pinned position or optimal local alignment
     if (traceback_aln) {
         if (pinned) {

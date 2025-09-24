@@ -132,5 +132,5 @@
 	url = https://github.com/microsoft/mimalloc.git
 [submodule "deps/gssw"]
 	path = deps/gssw
-	url = https://github.com/Fzurbonsen/gssw.git
+	url = git@github.com:Fzurbonsen/gssw.git
 	branch = HierarchyAligner

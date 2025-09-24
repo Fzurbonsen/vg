@@ -1134,10 +1134,21 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                            gap_open, gap_extension, full_length_bonus,
                            pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
 
-    test();
-    exit(1);
-
-    
+    gwfa_graph_align_trace_back(graph,
+                                1,
+                                max_alt_alns,
+                                true,
+                                align_sequence->c_str(),
+                                nullptr,
+                                align_sequence->size(),
+                                pinning_ids, // should be pinning nodes
+                                pinning_ids.size(),
+                                nt_table,
+                                score_matrix,
+                                gap_open,
+                                gap_extension,
+                                full_length_bonus,
+                                0);
 
     // traceback either from pinned position or optimal local alignment
     if (traceback_aln) {

@@ -4,7 +4,7 @@ import time
 
 def main():
 
-    print("started: run_timed_test.py\ns")
+    print("started: run_timed_test.py\n")
 
     if len(sys.argv) < 2:
         print("Usage: python time_binary.py <binary> [args...]")

@@ -1284,15 +1284,15 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
         }
         else {
             // trace back local alignment
-            gssw_graph_mapping* gm1 = gssw_graph_trace_back (graph,
-                                                            align_sequence->c_str(),
-                                                            align_sequence->size(),
-                                                            nt_table,
-                                                            score_matrix,
-                                                            gap_open,
-                                                            gap_extension,
-                                                            full_length_bonus,
-                                                            full_length_bonus);
+            // gssw_graph_mapping* gm1 = gssw_graph_trace_back (graph,
+            //                                                 align_sequence->c_str(),
+            //                                                 align_sequence->size(),
+            //                                                 nt_table,
+            //                                                 score_matrix,
+            //                                                 gap_open,
+            //                                                 gap_extension,
+            //                                                 full_length_bonus,
+            //                                                 full_length_bonus);
 
             gssw_graph_mapping* gm = gwfa_graph_align_trace_back(graph,
                                                                     1,
@@ -1310,14 +1310,14 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                                                                     full_length_bonus,
                                                                     0);
             
-            gssw_print_graph_cigar(&gm->cigar, stderr);
-            cerr << "gwfa: " << gm->score << endl;
-            gssw_print_graph_cigar(&gm1->cigar, stderr);
-            cerr << "gssw: " << gm1->score << endl << endl;
+            // gssw_print_graph_cigar(&gm->cigar, stderr);
+            // cerr << "gwfa: " << gm->score << endl;
+            // gssw_print_graph_cigar(&gm1->cigar, stderr);
+            // cerr << "gssw: " << gm1->score << endl << endl;
         
             gssw_mapping_to_alignment(graph, gm, alignment, pinned, pin_left);
             gssw_graph_mapping_destroy(gm);
-            gssw_graph_mapping_destroy(gm1);
+            // gssw_graph_mapping_destroy(gm1);
         }
     } else {
         // get the alignment position and score

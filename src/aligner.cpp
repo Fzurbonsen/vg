@@ -1152,9 +1152,6 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
 
     // traceback either from pinned position or optimal local alignment
     if (traceback_aln) {
-
-        cerr << pinning_ids.size() << endl;
-
         if (0) {
         // if (pinned) {
             // we can only run gssw's DP on non-empty graphs, but we may have masked the entire graph

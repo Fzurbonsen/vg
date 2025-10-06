@@ -3,18 +3,14 @@ import sys
 import time
 
 def main():
-
     print("started: run_timed_test.py\n")
 
     if len(sys.argv) < 2:
         print("Usage: python time_binary.py <binary> [args...]")
         sys.exit(1)
 
-    print("read inputs\n")
-
     binary = sys.argv[1]
     args = sys.argv[2:]
-
     command = [binary] + args
 
     print(f"Running: {' '.join(command)}")
@@ -22,7 +18,8 @@ def main():
     start_time = time.perf_counter()
 
     try:
-        subprocess.run(command, check=True)
+        with open("aln.gam", "wb") as f:
+            subprocess.run(command, check=True, stdout=f, stderr=sys.stderr)
     except subprocess.CalledProcessError as e:
         print(f"Error: Command failed with exit code {e.returncode}")
         sys.exit(e.returncode)

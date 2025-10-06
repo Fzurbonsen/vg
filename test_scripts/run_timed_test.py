@@ -9,6 +9,8 @@ def main():
         print("Usage: python time_binary.py <binary> [args...]")
         sys.exit(1)
 
+    output_file = input("please input the input file (aln.gam): ")
+
     binary = sys.argv[1]
     args = sys.argv[2:]
     command = [binary] + args
@@ -18,7 +20,7 @@ def main():
     start_time = time.perf_counter()
 
     try:
-        with open("aln.gam", "wb") as f:
+        with open(output_file, "wb") as f:
             subprocess.run(command, check=True, stdout=f, stderr=sys.stderr)
     except subprocess.CalledProcessError as e:
         print(f"Error: Command failed with exit code {e.returncode}")

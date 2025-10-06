@@ -29,3 +29,6 @@ def main():
     elapsed = end_time - start_time
 
     print(f"\nExecution time: {elapsed:.4f} seconds")
+
+if __name__ == "__main__":
+    main()

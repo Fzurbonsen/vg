@@ -1310,9 +1310,9 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                                                                     full_length_bonus,
                                                                     0);
             
-            gssw_print_graph_cigar(gm->cigar);
+            gssw_print_graph_cigar(gm->cigar, stderr);
             cerr << "gwfa: " << gm->score << endl;
-            gssw_print_graph_cigar(gm1->cigar);
+            gssw_print_graph_cigar(gm1->cigar, stderr);
             cerr << "gssw: " << gm1->score << endl << endl;
         
             gssw_mapping_to_alignment(graph, gm, alignment, pinned, pin_left);

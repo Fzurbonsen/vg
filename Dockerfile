@@ -50,6 +50,16 @@ RUN apt-get -qq -y update && apt-get -qq -y upgrade && apt-get -y install \
     tabix bcftools libzstd-dev pybind11-dev python3-pybind11 pandoc
 ###DEPS_END###
 
+# Add perf
+RUN apt-get update && \
+    apt-get install -y linux-tools-common linux-tools-generic && \
+    # Find where perf is installed and symlink it to /usr/bin
+    PERF_PATH=$(find /usr/lib -type f -name perf | head -n1) && \
+    ln -sf "$PERF_PATH" /usr/bin/perf && \
+    # Clean up apt cache
+    rm -rf /var/lib/apt/lists/*
+
+
 FROM packages AS build
 
 RUN echo build > /stage.txt

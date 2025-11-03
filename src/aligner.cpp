@@ -1128,11 +1128,16 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
     // convert into gssw graph
     gssw_graph* graph = create_gssw_graph(*align_graph);
     
-    // perform dynamic programming
-    gssw_graph_fill_pinned(graph, align_sequence->c_str(),
-                           nt_table, score_matrix,
-                           gap_open, gap_extension, full_length_bonus,
-                           pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
+    // // perform dynamic programming
+    // gssw_graph_fill_pinned(graph, align_sequence->c_str(),
+    //                        nt_table, score_matrix,
+    //                        gap_open, gap_extension, full_length_bonus,
+    //                        pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
+
+
+    // if (pinned) {
+    //     cerr << "this node is pinned" << endl;
+    // }
 
     // gwfa_graph_align_trace_back(graph,
     //                             1,
@@ -1141,7 +1146,7 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
     //                             align_sequence->c_str(),
     //                             nullptr,
     //                             align_sequence->size(),
-    //                             nullptr, // should be pinning nodes
+    //                             nullptr, // should be pinning nodess
     //                             pinning_ids.size(),
     //                             nt_table,
     //                             score_matrix,
@@ -1150,10 +1155,20 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
     //                             full_length_bonus,
     //                             0);
 
+
     // traceback either from pinned position or optimal local alignment
     if (traceback_aln) {
-        if (0) {
-        // if (pinned) {
+        // if (0) {
+        if (pinned) {
+
+            cerr << "pinned indicator!" << endl; // indicator to highlight pinned alignment using gssw (this should not happen ouside of unit tests and vg align)
+
+            // use gssw if we have a pinned alignment
+            gssw_graph_fill_pinned(graph, align_sequence->c_str(),
+                                   nt_table, score_matrix,
+                                   gap_open, gap_extension, full_length_bonus,
+                                   pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
+
             // we can only run gssw's DP on non-empty graphs, but we may have masked the entire graph
             // if it consists of only empty nodes, so don't both with the DP in that case
             gssw_graph_mapping** gms = nullptr;

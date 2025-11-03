@@ -47,5 +47,7 @@ debug_main.cpp
 /*.svg
 /*.fa
 /*.gfa
+
 .vscode/*
 /wor_files
+bin_backup

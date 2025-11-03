@@ -14,8 +14,8 @@ WORKDIR /vg
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 
-ENV http_proxy=http://proxy.ethz.ch:3128
-ENV https_proxy=https://proxy.ethz.ch:3128
+# ENV http_proxy=http://proxy.ethz.ch:3128
+# ENV https_proxy=https://proxy.ethz.ch:3128
 
 FROM base AS packages
 ARG THREADS=8
@@ -92,74 +92,74 @@ COPY scripts /vg/scripts
 
 ENV PATH /vg/bin:$PATH
 
-############################################################################################
-FROM build AS test
-ARG THREADS=8
+# ############################################################################################
+# FROM build AS test
+# ARG THREADS=8
 
-RUN echo test > /stage.txt
+# RUN echo test > /stage.txt
 
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && apt-get -qq -y install nodejs && npm install -g txm@7.4.5
+# RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && apt-get -qq -y install nodejs && npm install -g txm@7.4.5
 
-# Fail if any non-portable instructions were used
-# RUN /bin/bash -e -c 'if objdump -d /vg/bin/vg | grep vperm2i128 ; then exit 1 ; else exit 0 ; fi'
+# # Fail if any non-portable instructions were used
+# # RUN /bin/bash -e -c 'if objdump -d /vg/bin/vg | grep vperm2i128 ; then exit 1 ; else exit 0 ; fi'
 
-# Bring in the tests and docs, which have doctests
-COPY test /vg/test
-COPY doc /vg/doc
-# We test the README so bring it along.
-COPY README.md /vg/
+# # Bring in the tests and docs, which have doctests
+# COPY test /vg/test
+# COPY doc /vg/doc
+# # We test the README so bring it along.
+# COPY README.md /vg/
 
-# Run tests in the middle so the final container that gets tagged is the run container.
-# Tests may not actually be run by smart builders like buildkit.
-# RUN /bin/bash -e -c "export OMP_NUM_THREADS=$((THREADS < $(nproc) ? THREADS : $(nproc))); make test"
+# # Run tests in the middle so the final container that gets tagged is the run container.
+# # Tests may not actually be run by smart builders like buildkit.
+# # RUN /bin/bash -e -c "export OMP_NUM_THREADS=$((THREADS < $(nproc) ? THREADS : $(nproc))); make test"
 
 
-############################################################################################
-FROM base AS run
+# ############################################################################################
+# FROM base AS run
 
-RUN echo run > /stage.txt
+# RUN echo run > /stage.txt
 
-# Install packages which toil-vg needs to be available inside the image, for
-# pipes and profiling, and good usability on Kubernetes.
-# TODO: which of these can be removed?
-# Make sure to clean so we don't ship old apt package indexes in our Docker.
-RUN ls -lah /vg && \
-    apt-get -qq -y update && \
-    apt-get -qq -y upgrade && \
-    apt-get -qq -y install --no-upgrade \
-    curl \
-    wget \
-    pigz \
-    dstat \
-    pv \
-    jq \
-    samtools \
-    tabix \
-    parallel \
-    fontconfig-config \
-    awscli \
-    binutils \
-    libpython2.7 \
-    libperl-dev \
-    libelf1 \
-    libdw1 \
-    libslang2 \
-    libnuma1 \
-    numactl \
-    bc \
-    linux-tools-common \
-    linux-tools-generic \
-    perl \
-    time \
-    && apt-get -qq -y clean
+# # Install packages which toil-vg needs to be available inside the image, for
+# # pipes and profiling, and good usability on Kubernetes.
+# # TODO: which of these can be removed?
+# # Make sure to clean so we don't ship old apt package indexes in our Docker.
+# RUN ls -lah /vg && \
+#     apt-get -qq -y update && \
+#     apt-get -qq -y upgrade && \
+#     apt-get -qq -y install --no-upgrade \
+#     curl \
+#     wget \
+#     pigz \
+#     dstat \
+#     pv \
+#     jq \
+#     samtools \
+#     tabix \
+#     parallel \
+#     fontconfig-config \
+#     awscli \
+#     binutils \
+#     libpython2.7 \
+#     libperl-dev \
+#     libelf1 \
+#     libdw1 \
+#     libslang2 \
+#     libnuma1 \
+#     numactl \
+#     bc \
+#     linux-tools-common \
+#     linux-tools-generic \
+#     perl \
+#     time \
+#     && apt-get -qq -y clean
     
-# COPY --from=build /vg/bin/vg /vg/bin/
+# # COPY --from=build /vg/bin/vg /vg/bin/
 
-COPY --from=build /vg/scripts/* /vg/scripts/
-# Make sure we have the flame graph scripts so we can do self-profiling
-# COPY --from=build /vg/deps/FlameGraph /vg/deps/FlameGraph
+# COPY --from=build /vg/scripts/* /vg/scripts/
+# # Make sure we have the flame graph scripts so we can do self-profiling
+# # COPY --from=build /vg/deps/FlameGraph /vg/deps/FlameGraph
 
-ENV PATH /vg/bin:$PATH
+# ENV PATH /vg/bin:$PATH
 
 
 

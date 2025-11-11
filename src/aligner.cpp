@@ -1140,10 +1140,10 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
     gssw_graph* graph = create_gssw_graph(*align_graph);
     
     // perform dynamic programming for testing
-    gssw_graph_fill_pinned(graph, align_sequence->c_str(),
-                           nt_table, score_matrix,
-                           gap_open, gap_extension, full_length_bonus,
-                           pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
+    // gssw_graph_fill_pinned(graph, align_sequence->c_str(),
+    //                        nt_table, score_matrix,
+    //                        gap_open, gap_extension, full_length_bonus,
+    //                        pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
 
 
     // if (pinned) {
@@ -1310,33 +1310,33 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
         }
         else {
             // trace back local alignment
-            gssw_graph_mapping* gm1 = gssw_graph_trace_back (graph,
-                                                            align_sequence->c_str(),
-                                                            align_sequence->size(),
-                                                            nt_table,
-                                                            score_matrix,
-                                                            gap_open,
-                                                            gap_extension,
-                                                            full_length_bonus,
-                                                            full_length_bonus);
+            // gssw_graph_mapping* gm1 = gssw_graph_trace_back (graph,
+            //                                                 align_sequence->c_str(),
+            //                                                 align_sequence->size(),
+            //                                                 nt_table,
+            //                                                 score_matrix,
+            //                                                 gap_open,
+            //                                                 gap_extension,
+            //                                                 full_length_bonus,
+            //                                                 full_length_bonus);
 
-            // gssw_graph_mapping* gm = gwfa_graph_align_trace_back(graph,
-            //                                                         1,
-            //                                                         max_alt_alns,
-            //                                                         true,
-            //                                                         align_sequence->c_str(),
-            //                                                         nullptr,
-            //                                                         align_sequence->size(),
-            //                                                         nullptr, // should be pinning nodes
-            //                                                         pinning_ids.size(),
-            //                                                         nt_table,
-            //                                                         score_matrix,
-            //                                                         gap_open,
-            //                                                         gap_extension,
-            //                                                         full_length_bonus,
-            //                                                         0,
-            //                                                         GWFA_EDLIB_INFIX,
-            //                                                         1);
+            gssw_graph_mapping* gm = gwfa_graph_align_trace_back(graph,
+                                                                    1,
+                                                                    max_alt_alns,
+                                                                    true,
+                                                                    align_sequence->c_str(),
+                                                                    nullptr,
+                                                                    align_sequence->size(),
+                                                                    nullptr, // should be pinning nodes
+                                                                    pinning_ids.size(),
+                                                                    nt_table,
+                                                                    score_matrix,
+                                                                    gap_open,
+                                                                    gap_extension,
+                                                                    full_length_bonus,
+                                                                    0,
+                                                                    GWFA_CSSWL_INFIX,
+                                                                    1);
             
             // debug loop
             // if (gm->cigar.length != gm1->cigar.length) {
@@ -1385,10 +1385,10 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
 
             // gm1->score = gm->score;
         
-            // gssw_mapping_to_alignment(graph, gm, alignment, pinned, pin_left);
-            gssw_mapping_to_alignment(graph, gm1, alignment, pinned, pin_left);
-            // gssw_graph_mapping_destroy(gm);
-            gssw_graph_mapping_destroy(gm1);
+            gssw_mapping_to_alignment(graph, gm, alignment, pinned, pin_left);
+            // gssw_mapping_to_alignment(graph, gm1, alignment, pinned, pin_left);
+            gssw_graph_mapping_destroy(gm);
+            // gssw_graph_mapping_destroy(gm1);
         }
     } else {
         // get the alignment position and score

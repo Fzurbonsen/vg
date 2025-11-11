@@ -1336,7 +1336,7 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                                                                     full_length_bonus,
                                                                     0,
                                                                     GWFA_CSSWL_INFIX,
-                                                                    1);
+                                                                    0);
             
             // debug loop
             // if (gm->cigar.length != gm1->cigar.length) {

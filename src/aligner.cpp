@@ -19,6 +19,17 @@ namespace vg {
 using namespace std;
 using namespace vg::io;
 
+// global variables for testing:
+static int total_path_mismatch = 0;
+static int total_n_alignments = 0 ;
+static int max_diff = 0;
+
+static int local_diff(int a, int b) {
+    if (a > b) return a - b;
+    return b - a;
+}
+
+
 int32_t score_gap(size_t gap_length, int32_t gap_open, int32_t gap_extension) {
     return gap_length ? -gap_open - (gap_length - 1) * gap_extension : 0;
 }
@@ -1128,11 +1139,11 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
     // convert into gssw graph
     gssw_graph* graph = create_gssw_graph(*align_graph);
     
-    // // perform dynamic programming
-    // gssw_graph_fill_pinned(graph, align_sequence->c_str(),
-    //                        nt_table, score_matrix,
-    //                        gap_open, gap_extension, full_length_bonus,
-    //                        pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
+    // perform dynamic programming for testing
+    gssw_graph_fill_pinned(graph, align_sequence->c_str(),
+                           nt_table, score_matrix,
+                           gap_open, gap_extension, full_length_bonus,
+                           pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
 
 
     // if (pinned) {
@@ -1163,11 +1174,11 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
 
             cerr << "pinned indicator!" << endl; // indicator to highlight pinned alignment using gssw (this should not happen ouside of unit tests and vg align)
 
-            // use gssw if we have a pinned alignment
-            gssw_graph_fill_pinned(graph, align_sequence->c_str(),
-                                   nt_table, score_matrix,
-                                   gap_open, gap_extension, full_length_bonus,
-                                   pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
+            // // use gssw if we have a pinned alignment
+            // gssw_graph_fill_pinned(graph, align_sequence->c_str(),
+            //                        nt_table, score_matrix,
+            //                        gap_open, gap_extension, full_length_bonus,
+            //                        pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
 
             // we can only run gssw's DP on non-empty graphs, but we may have masked the entire graph
             // if it consists of only empty nodes, so don't both with the DP in that case
@@ -1299,15 +1310,15 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
         }
         else {
             // trace back local alignment
-            // gssw_graph_mapping* gm = gssw_graph_trace_back (graph,
-            //                                                 align_sequence->c_str(),
-            //                                                 align_sequence->size(),
-            //                                                 nt_table,
-            //                                                 score_matrix,
-            //                                                 gap_open,
-            //                                                 gap_extension,
-            //                                                 full_length_bonus,
-            //                                                 full_length_bonus);
+            gssw_graph_mapping* gm1 = gssw_graph_trace_back (graph,
+                                                            align_sequence->c_str(),
+                                                            align_sequence->size(),
+                                                            nt_table,
+                                                            score_matrix,
+                                                            gap_open,
+                                                            gap_extension,
+                                                            full_length_bonus,
+                                                            full_length_bonus);
 
             gssw_graph_mapping* gm = gwfa_graph_align_trace_back(graph,
                                                                     1,
@@ -1323,16 +1334,60 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                                                                     gap_open,
                                                                     gap_extension,
                                                                     full_length_bonus,
-                                                                    0);
+                                                                    0,
+                                                                    GWFA_EDLIB_INFIX,
+                                                                    1);
             
+            // debug loop
+            // if (gm->cigar.length != gm1->cigar.length) {
+            //     gssw_print_graph_cigar(&gm->cigar, stderr);
+            //     cerr << "offset: " << gm->position << endl;
+            //     cerr << "gwfa: " << gm->score << endl;
+            //     gssw_print_graph_cigar(&gm1->cigar, stderr);
+            //     cerr << "offset: " << gm1->position << endl;
+            //     cerr << "gssw: " << gm1->score << endl << endl;
+            //     total_path_mismatch++;
+            // } else {
+            //     for (int i = 0; i < gm->cigar.length; ++i) {
+            //         if (gm->cigar.elements[i].node->id != gm1->cigar.elements[i].node->id) {
+            //             gssw_print_graph_cigar(&gm->cigar, stderr);
+            //             cerr << "offset: " << gm->position << endl;
+            //             cerr << "gwfa: " << gm->score << endl;
+            //             gssw_print_graph_cigar(&gm1->cigar, stderr);
+            //             cerr << "offset: " << gm1->position << endl;
+            //             cerr << "gssw: " << gm1->score << endl << endl;
+            //             total_path_mismatch++;
+            //         }
+            //     }
+            // }
+            if (gm->score != gm1->score) {
+                gssw_print_graph_cigar(&gm->cigar, stderr);
+                int score1 = gm->score;
+                cerr << "gwfa: " << gm->score << endl;
+                gssw_print_graph_cigar(&gm1->cigar, stderr);
+                int score2 = gm1->score;
+                cerr << "gssw: " << gm1->score << endl << endl;
+                int diff = local_diff(score1, score2);
+                if (diff > max_diff) {
+                    max_diff = diff;
+                    cerr << "new max diff: " << max_diff << endl;
+                }
+            }
+
+            // total_n_alignments++;
+
+            // cerr << total_n_alignments << "->" << total_path_mismatch << endl;
+
             // gssw_print_graph_cigar(&gm->cigar, stderr);
             // cerr << "gwfa: " << gm->score << endl;
             // gssw_print_graph_cigar(&gm1->cigar, stderr);
             // cerr << "gssw: " << gm1->score << endl << endl;
+
+            // gm1->score = gm->score;
         
             gssw_mapping_to_alignment(graph, gm, alignment, pinned, pin_left);
             gssw_graph_mapping_destroy(gm);
-            // gssw_graph_mapping_destroy(gm1);
+            gssw_graph_mapping_destroy(gm1);
         }
     } else {
         // get the alignment position and score

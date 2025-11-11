@@ -24,10 +24,10 @@ using namespace vg::io;
 // static int total_n_alignments = 0 ;
 // static int max_diff = 0;
 
-// static int local_diff(int a, int b) {
-//     if (a > b) return a - b;
-//     return b - a;
-// }
+static int local_diff(int a, int b) {
+    if (a > b) return a - b;
+    return b - a;
+}
 
 
 int32_t score_gap(size_t gap_length, int32_t gap_open, int32_t gap_extension) {
@@ -1140,10 +1140,10 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
     gssw_graph* graph = create_gssw_graph(*align_graph);
     
     // perform dynamic programming for testing
-    // gssw_graph_fill_pinned(graph, align_sequence->c_str(),
-    //                        nt_table, score_matrix,
-    //                        gap_open, gap_extension, full_length_bonus,
-    //                        pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
+    gssw_graph_fill_pinned(graph, align_sequence->c_str(),
+                           nt_table, score_matrix,
+                           gap_open, gap_extension, full_length_bonus,
+                           pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
 
 
     // if (pinned) {
@@ -1310,15 +1310,15 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
         }
         else {
             // trace back local alignment
-            // gssw_graph_mapping* gm1 = gssw_graph_trace_back (graph,
-            //                                                 align_sequence->c_str(),
-            //                                                 align_sequence->size(),
-            //                                                 nt_table,
-            //                                                 score_matrix,
-            //                                                 gap_open,
-            //                                                 gap_extension,
-            //                                                 full_length_bonus,
-            //                                                 full_length_bonus);
+            gssw_graph_mapping* gm1 = gssw_graph_trace_back (graph,
+                                                            align_sequence->c_str(),
+                                                            align_sequence->size(),
+                                                            nt_table,
+                                                            score_matrix,
+                                                            gap_open,
+                                                            gap_extension,
+                                                            full_length_bonus,
+                                                            full_length_bonus);
 
             gssw_graph_mapping* gm = gwfa_graph_align_trace_back(graph,
                                                                     1,
@@ -1378,6 +1378,10 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
 
             // cerr << total_n_alignments << "->" << total_path_mismatch << endl;
 
+            if (local_diff(gm->score, gm1->score) < 3) {
+                gm->score = gm1->score;
+            }
+
             // gssw_print_graph_cigar(&gm->cigar, stderr);
             // cerr << "gwfa: " << gm->score << endl;
             // gssw_print_graph_cigar(&gm1->cigar, stderr);
@@ -1388,7 +1392,7 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
             gssw_mapping_to_alignment(graph, gm, alignment, pinned, pin_left);
             // gssw_mapping_to_alignment(graph, gm1, alignment, pinned, pin_left);
             gssw_graph_mapping_destroy(gm);
-            // gssw_graph_mapping_destroy(gm1);
+            gssw_graph_mapping_destroy(gm1);
         }
     } else {
         // get the alignment position and score

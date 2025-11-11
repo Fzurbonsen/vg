@@ -1140,10 +1140,10 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
     gssw_graph* graph = create_gssw_graph(*align_graph);
     
     // perform dynamic programming for testing
-    gssw_graph_fill_pinned(graph, align_sequence->c_str(),
-                           nt_table, score_matrix,
-                           gap_open, gap_extension, full_length_bonus,
-                           pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
+    // gssw_graph_fill_pinned(graph, align_sequence->c_str(),
+    //                        nt_table, score_matrix,
+    //                        gap_open, gap_extension, full_length_bonus,
+    //                        pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
 
 
     // if (pinned) {
@@ -1310,15 +1310,15 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
         }
         else {
             // trace back local alignment
-            gssw_graph_mapping* gm1 = gssw_graph_trace_back (graph,
-                                                            align_sequence->c_str(),
-                                                            align_sequence->size(),
-                                                            nt_table,
-                                                            score_matrix,
-                                                            gap_open,
-                                                            gap_extension,
-                                                            full_length_bonus,
-                                                            full_length_bonus);
+            // gssw_graph_mapping* gm1 = gssw_graph_trace_back (graph,
+            //                                                 align_sequence->c_str(),
+            //                                                 align_sequence->size(),
+            //                                                 nt_table,
+            //                                                 score_matrix,
+            //                                                 gap_open,
+            //                                                 gap_extension,
+            //                                                 full_length_bonus,
+            //                                                 full_length_bonus);
 
             gssw_graph_mapping* gm = gwfa_graph_align_trace_back(graph,
                                                                     1,
@@ -1360,19 +1360,19 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
             //         }
             //     }
             // }
-            if (gm->score != gm1->score) {
-                gssw_print_graph_cigar(&gm->cigar, stderr);
-                int score1 = gm->score;
-                cerr << "gwfa: " << gm->score << endl;
-                gssw_print_graph_cigar(&gm1->cigar, stderr);
-                int score2 = gm1->score;
-                cerr << "gssw: " << gm1->score << endl << endl;
-                // int diff = local_diff(score1, score2);
-                // if (diff > max_diff) {
-                //     max_diff = diff;
-                //     cerr << "new max diff: " << max_diff << endl;
-                // }
-            }
+            // if (gm->score != gm1->score) {
+            //     gssw_print_graph_cigar(&gm->cigar, stderr);
+            //     int score1 = gm->score;
+            //     cerr << "gwfa: " << gm->score << endl;
+            //     gssw_print_graph_cigar(&gm1->cigar, stderr);
+            //     int score2 = gm1->score;
+            //     cerr << "gssw: " << gm1->score << endl << endl;
+            //     // int diff = local_diff(score1, score2);
+            //     // if (diff > max_diff) {
+            //     //     max_diff = diff;
+            //     //     cerr << "new max diff: " << max_diff << endl;
+            //     // }
+            // }
 
             // total_n_alignments++;
 
@@ -1392,7 +1392,7 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
             gssw_mapping_to_alignment(graph, gm, alignment, pinned, pin_left);
             // gssw_mapping_to_alignment(graph, gm1, alignment, pinned, pin_left);
             gssw_graph_mapping_destroy(gm);
-            gssw_graph_mapping_destroy(gm1);
+            // gssw_graph_mapping_destroy(gm1);
         }
     } else {
         // get the alignment position and score

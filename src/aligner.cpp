@@ -1336,7 +1336,7 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                                                                     full_length_bonus,
                                                                     0,
                                                                     GWFA_CSSWL_INFIX,
-                                                                    0);
+                                                                    1);
             
             // debug loop
             // if (gm->cigar.length != gm1->cigar.length) {
@@ -1360,27 +1360,27 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
             //         }
             //     }
             // }
-            // if (gm->score != gm1->score) {
-            //     gssw_print_graph_cigar(&gm->cigar, stderr);
-            //     int score1 = gm->score;
-            //     cerr << "gwfa: " << gm->score << endl;
-            //     gssw_print_graph_cigar(&gm1->cigar, stderr);
-            //     int score2 = gm1->score;
-            //     cerr << "gssw: " << gm1->score << endl << endl;
-            //     int diff = local_diff(score1, score2);
-            //     if (diff > max_diff) {
-            //         max_diff = diff;
-            //         cerr << "new max diff: " << max_diff << endl;
-            //     }
-            // }
+            if (gm->score != gm1->score) {
+                gssw_print_graph_cigar(&gm->cigar, stderr);
+                int score1 = gm->score;
+                cerr << "gwfa: " << gm->score << endl;
+                gssw_print_graph_cigar(&gm1->cigar, stderr);
+                int score2 = gm1->score;
+                cerr << "gssw: " << gm1->score << endl << endl;
+                // int diff = local_diff(score1, score2);
+                // if (diff > max_diff) {
+                //     max_diff = diff;
+                //     cerr << "new max diff: " << max_diff << endl;
+                // }
+            }
 
             // total_n_alignments++;
 
             // cerr << total_n_alignments << "->" << total_path_mismatch << endl;
 
-            if (local_diff(gm->score, gm1->score) < 3) {
-                gm->score = gm1->score;
-            }
+            // if (local_diff(gm->score, gm1->score) < 3) {
+            //     gm->score = gm1->score;
+            // }
 
             // gssw_print_graph_cigar(&gm->cigar, stderr);
             // cerr << "gwfa: " << gm->score << endl;

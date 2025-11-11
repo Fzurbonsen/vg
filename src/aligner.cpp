@@ -30,9 +30,9 @@ using namespace vg::io;
 // }
 
 
-// int32_t score_gap(size_t gap_length, int32_t gap_open, int32_t gap_extension) {
-//     return gap_length ? -gap_open - (gap_length - 1) * gap_extension : 0;
-// }
+int32_t score_gap(size_t gap_length, int32_t gap_open, int32_t gap_extension) {
+    return gap_length ? -gap_open - (gap_length - 1) * gap_extension : 0;
+}
 
 static const double quality_scale_factor = 10.0 / log(10.0);
 static const double exp_overflow_limit = log(std::numeric_limits<double>::max());

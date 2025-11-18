@@ -1135,6 +1135,8 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
         null_masked_graph = new NullMaskingGraph(oriented_graph);
         align_graph = null_masked_graph;
     }
+
+    gssw_sse2_disable();
     
     // convert into gssw graph
     gssw_graph* graph = create_gssw_graph(*align_graph);

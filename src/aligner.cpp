@@ -1343,7 +1343,7 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
 
             call_counter++;
 
-            if (call_counter % 100 == 0) {
+            if (call_counter % 100000 == 0) {
                 fprintf(stderr, "%i ", call_counter);
             }
             

@@ -1337,7 +1337,7 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                                                                     gap_extension,
                                                                     full_length_bonus,
                                                                     0,
-                                                                    GWFA_CSSWL_INFIX,
+                                                                    GWFA_CSSWL_INFIX_SIMD,
                                                                     0);
             
             // debug loop

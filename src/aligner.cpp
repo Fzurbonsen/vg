@@ -19,6 +19,9 @@ namespace vg {
 using namespace std;
 using namespace vg::io;
 
+// global variable to track calls
+static int call_counter = 0;
+
 int32_t score_gap(size_t gap_length, int32_t gap_open, int32_t gap_extension) {
     return gap_length ? -gap_open - (gap_length - 1) * gap_extension : 0;
 }
@@ -1133,6 +1136,12 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                            nt_table, score_matrix,
                            gap_open, gap_extension, full_length_bonus,
                            pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
+
+    call_counter++;
+
+    if (call_counter % 100000 == 0) {
+        fprintf(stderr, "%i ", call_counter);
+    }
 
     // traceback either from pinned position or optimal local alignment
     if (traceback_aln) {

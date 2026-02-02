@@ -23,7 +23,6 @@ using namespace vg::io;
 // static int total_path_mismatch = 0;
 // static int total_n_alignments = 0 ;
 // static int max_diff = 0;
-static int call_counter = 0;
 
 static int local_diff(int a, int b) {
     if (a > b) return a - b;
@@ -1338,14 +1337,8 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
                                                                     gap_extension,
                                                                     full_length_bonus,
                                                                     0,
-                                                                    GWFA_CSSWL_INFIX,
+                                                                    GWFA_CSSWL_INFIX_SIMD,
                                                                     0);
-
-            call_counter++;
-
-            if (call_counter % 10000000 == 0) {
-                fprintf(stderr, "%i ", call_counter);
-            }
             
             // debug loop
             // if (gm->cigar.length != gm1->cigar.length) {

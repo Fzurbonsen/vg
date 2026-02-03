@@ -1142,10 +1142,10 @@ void Aligner::align_internal(Alignment& alignment, vector<Alignment>* multi_alig
     gssw_graph* graph = create_gssw_graph(*align_graph);
     
     // perform dynamic programming for testing
-    // gssw_graph_fill_pinned(graph, align_sequence->c_str(),
-    //                        nt_table, score_matrix,
-    //                        gap_open, gap_extension, full_length_bonus,
-    //                        pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
+    gssw_graph_fill_pinned(graph, align_sequence->c_str(),
+                           nt_table, score_matrix,
+                           gap_open, gap_extension, full_length_bonus,
+                           pinned ? 0 : full_length_bonus, 15, 2, traceback_aln);
 
 
     // if (pinned) {
